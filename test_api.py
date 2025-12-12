@@ -3,7 +3,7 @@ import json
 import random
 
 # The address of your local API
-url = "http://127.0.0.1:8000/predict"
+url = "http://127.0.0.1:8005/predict"
 
 # Generate a fake network packet (78 random numbers)
 # In the real world, this would come from a network sensor reading Wireshark data
