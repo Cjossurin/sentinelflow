@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  # 1. The Message Broker (Redpanda)
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.14
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+    ports:
+      - 19092:19092
+      - 9644:9644
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
+
+  # 2. The Dashboard (Redpanda Console)
+  console:
+    image: docker.redpanda.com/redpandadata/console:v2.3.1
+    container_name: redpanda-console
+    ports:
+      - 8080:8080
+    # FIX: Use environment variables instead of the complex command string
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    depends_on:
+      - redpanda
+
+volumes:
+  redpanda-data:
